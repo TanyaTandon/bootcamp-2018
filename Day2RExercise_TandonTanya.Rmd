@@ -1,0 +1,118 @@
+---
+title: "R_bootcamp_day2"
+author: "Tanya Tandon"
+date: "9/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+here::here("data", "gapminder5.csv")
+
+gapminder <- read.csv(here::here("data", "gapminder5.csv"))
+str(gapminder)
+
+
+```
+# Converting factors to characters 
+```{r}
+
+gapminder$country <- as.character(gapminder$country)
+gapminder$continent <- as.character(gapminder$continent)
+str(gapminder)
+
+
+
+
+```
+#GDP for each country 
+```{r}
+
+obs <- 1:nrow(gapminder)
+
+for(i in obs) {
+  gapminder[i, "gdp"] <- gapminder[i, "pop"] * gapminder[i, "gdpPercap"]
+}
+
+```
+# a new variable that finds that natural log (log) of the GDP per capita and of population - call them log_gdpPercap and log_pop
+
+```{r}
+for (i in nrow(gapminder)){
+  log_gdpPercap <- log(gapminder$gdpPercap)
+  log_pop <- log(gapminder$pop)
+  head(gapminder)
+}
+
+
+```
+
+```{r}
+
+for (i in obs) { # the function to repeat is enclosed in braces {}
+  gapminder[i, "log_gdpPercap"] <- log(gapminder[i, "gdpPercap"])
+  gapminder[i, "log_pop"] <- log(gapminder[i, "pop"])
+}
+```
+
+```{r}
+gapminder$vec_log_gdpPercap <- log(gapminder$gdpPercap)
+all(gapminder$vec_log_gdpPercap == gapminder$log_gdpPercap)
+```
+# Has life expectancy increased over time in continent
+
+```{r}
+continent1 <- unique(gapminder$continent)
+for ( i in continent1) {
+  mean_conti <- mean(gapminder$lifeEx[gapminder$continent == i], na.rm = T)
+  print(paste0(i, ": " , mean_conti))
+}
+```
+
+#nested for loop exercise!Has the gap in life expectancy between countries on different continents narrowed over time?
+
+```{r}
+un <- unique(gapminder$continent)
+for( i in un ){
+  gap <- sd(gapminder$country[gapminder$continent == i])
+  print( paste0(i , " : " , gap))
+}
+
+```
+# WHILLEE
+```{r}
+i <- 1987 
+
+while(i <= 2002) {
+  sd <- sd(gapminder$lifeExp[gapminder$year==i])
+  print(paste( i , ": " , sd))
+  i <-i + 5
+}
+
+```
+#Write a for loop that reports the mean population for years greater than or equal to 1987. Make sure the loop prints a message if the condition is not met!
+
+```{r}
+gapminder
+ for(i in unique(gapminder$year)){
+   m  <- mean(gapminder$pop[gapminder$year == i])
+   if (i >= 1987) {
+     print(paste0(" Pop in ", i, " : ", m))
+   }
+   else {
+     print( " Year smaller than 1987")
+   }
+   
+ }
+```
+```{r}
+report_mean_sd <- 
+  function(df, variable, country) {
+    var <- gapminder[[variable]][gapminder$country == country]
+    head(var)
+  }
+
+```
