@@ -1,0 +1,73 @@
+---
+title: "Day3RGGplot_TT"
+author: "Tanya Tandon"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+source(here::here("data/day3_objects.R"))
+```
+#Using the gapminder07 data, create a scatterplot of the natural log of gdpPercap as a function of the natural log of  pop. Give it a title and axis labels.
+
+```{r}
+ggplot(gapminder07) + geom_point(aes(  y = log(pop), x= log(gdpPercap), )) + labs(x = "log gdpPercap", y = "log pop", title = "scatter plot" )
+```
+#Plot a column chart hydroelectric power generated over time.
+```{r}
+merged_energy %>%
+  group_by(datetime) %>%
+  summarise(total= )
+  
+```
+
+#Create a column chart that shows the total output per source. Change the color of the columns to "darkred". Add a horizontal line indicating the mean output across all sources. Use the cheatsheet to identify the geom function that you need.Add a meaningful title and axis labels using labs().
+
+```{r}
+long_merged_energy %>%
+  group_by(source) %>%
+  summarise(total_output = sum(output)) %>%
+  ggplot() + geom_col(aes (x= source, y= total_output ), col = "darkred", fill = "darkred") + geom_hline()
+  
+  
+```
+
+#Create a line plot that compares generation of wind, solar, and geothermal energy over time.
+
+```{r}
+long_merged_energy %>%
+  filter(source == 'wind' | source == 'solar' | source ==?re 'geothermal') %>%
+  ggplot() +
+  geom_line(aes(x=datetime, y=output, group=source, col=source))
+```
+
+#Visualize the average output for each hour of the day, grouped by source.
+```{r}
+long_merged_energy %>%
+  
+  mutate ( hour = lubridate:: hour(datetime) ) %>%
+   group_by(source, hour) %>% 
+  summarize( mean = mean(output)) %>%
+  ggplot() +
+   geom_area(aes(x=hour, y=output, fill=factor(source))) + 
+  scale_fill_brewer(palette="Set3", name="Source") + 
+  labs(title="Average hourly output by source", 
+       subtitle="Data collected during September 3-9",
+       x="Hour of the day", y="Output (MW)") + 
+  theme_bw()
+
+```
+
+```{r}
+long_gen %>% 
+  ggplot() + 
+  geom_line(aes(x = datetime, y = output)) + 
+  facet_wrap(~source, scales="free") + 
+  labs(title="Generation over time, by energy source", subtitle="Hourly data from September 3-9, 2018", x="Hour", y="Output (MW)")
+merge(regroup, by="type")
+```
+
+#Compare generation patterns for each source
