@@ -1,0 +1,86 @@
+---
+title: "Day3RExercises_TanyaTandon"
+author: "Tanya Tandon"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Day begins-------------------------------------
+
+```{r}
+generation <- read.csv(here::here("data/generation.csv"), 
+                       stringsAsFactors = F)
+imports <- read.csv(here::here("data/imports.csv"), 
+                    stringsAsFactors = F)
+
+str(generation)
+str(imports)
+head(generation)
+str(imports)
+library(lubridate)
+generation$datetime <- as_datetime(generation$datetime)
+class(generation$datatime)
+imports$datetime <- as_datetime(imports$datetime)
+```
+
+
+```{r}
+library(reshape2)
+long_gen <- melt(generation, id.vars = "datetime",
+                           variable.name = "source",
+                           value.name = "usage")
+```
+
+```{r}
+merged_energy <- merge(generation, imports, by = "datetime")
+dim(merged_energy)
+head(merged_energy)
+long_merged_energy <- melt(merged_energy, id.vars = "datetime",
+                           variable.name = "source",
+                           value.name = "usage")
+head(long_merged_energy)
+```
+
+#deplyr 
+
+```{r}
+
+library(dplyr)
+tmp <- select(merged_energy, biogas, biomass, geothermal, solar)
+names(tmp)
+
+```
+#first exercise, Using the (wide) merged CA energy data merged_energy do the following with pipes:Select variables that contain the word ???hydro???~~~~Create a new variable called total_hydro that is the sum of the retained hydro variables~~~~Find the mean usage for total_hydro
+
+```{r}
+
+merged_energy %>%
+  select(contains ("hydro")) %>%
+  mutate(total_hydro = rowSums(.,na.rm = T)) %>%
+  summarize(mean_total_hydro = mean(total_hydro, na.rm=T))
+
+```
+#Use your knowledge of dplyr to find the mean usage for small hydro, large hydro, biogas, and biomass ~~Start with either the wide or long merged dataset
+```{r}
+merged_energy %>%
+  select(contains ("hydro"), biogas, biomass) %>%
+  summarize(t_l= mean(large_hydro), t_s= mean(small_hydro), t_bg = mean(biogas), t_bm= mean(biomass))
+
+  
+
+```
+
+
+```{r}
+merged_energy %>% 
+  select(datetime, contains("hydro"), contains("bio")) %>% 
+  melt(id.vars = "datetime",
+       variable.name = "source",
+       value.name = "usage")
+```
+
+
