@@ -107,7 +107,11 @@ gapminder
    }
    
  }
-```
+
+
+
+
+
 ```{r}
 report_mean_sd <- 
   function(df, variable, country) {
@@ -116,3 +120,64 @@ report_mean_sd <-
   }
 
 ```
+# Write a function that reports the mean, median, minimum, and maximum for life expectancy for a continent in  gapminder
+
+```{r}
+new_func <-
+  function(df, var1, var2) {
+   var <- gapminder[[var1]][var2]
+     
+     mean <- mean(gap_minder$life_exp[gapminder$continent= i])
+     median <- meadian(gap_minder$life_exp[gapminder$continent= i])
+    
+   }
+  }
+  new_func(gapminder,"lifeExp")
+  ```
+  
+  ```{r}
+  report_stats <-
+  function(df, variable, continent) {
+    var <- gapminder[[variable]][gapminder$continent == continent]
+    min_le <- min(var)
+    max_le <- max(var)
+    cat("Continent:", continent,
+        "\nMinimum Life expectancy:", min_le,
+        "\nMaximum Life expectancy:", max_le)
+  }
+
+report_stats(gapminder, "lifeExp", "Asia")
+```
+
+#NEW 
+
+#Use an if() statement to print a suitable message reporting whether there are any records from 2002 in the gapminder dataset. Now do the same for 2012.
+
+```{r}
+
+if( any(gapminder$year == 2002) == TRUE ) {
+  print ("Yes, there is")
+} else {
+  prin("Na, not 2002")
+}
+
+if( any(gapminder$year == 2012) == TRUE ) {
+  print ("Yes, there is")
+} else {
+  print (" Na, not 2012" )
+}
+
+
+
+```
+# Write a script that finds the mean life expectancy by country for countries whose population is below the mean for the dataset 
+
+```{r}
+m <- mean(gapminder$pop)
+
+
+
+
+```
+  
+
