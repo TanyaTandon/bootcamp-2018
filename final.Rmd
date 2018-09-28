@@ -1,0 +1,93 @@
+---
+title: "Final_Exercise"
+author: "Tanya Tandon"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+getwd()
+here::here( "nys_schools.csv")
+
+nys_schools <- read.csv("data/nys_schools.csv", stringsAsFactors = F)
+nys_acs <- read.csv("data/nys_acs.csv", stringsAsFactors = F)
+str(nys_schools)
+str(nys_acs)
+head(nys_schools)
+head(nys_acs)
+
+summary(nys_acs)
+summary(nys_schools)
+
+```
+```{r}
+nys_schools[nys_schools == -99] <- NA
+summary(nys_schools)
+
+
+ for( name in names(nys_schools)) {
+  
+   
+   if (class(nys_schools[[name]]) != 'character') 
+   {
+  nys_schools[[name]][is.na(nys_schools[[name]])]  <- mean( nys_schools[[name]], na.rm = T)
+ }
+ }
+summary(nys_schools)
+
+nys_acs[nys_acs == -99] <- NA
+ for( name in names(nys_acs)) {
+  
+   
+   if (class(nys_acs[[name]]) != 'character') 
+   {
+  nys_acs[[name]][is.na(nys_acs[[name]])]  <- mean( nys_acs[[name]], na.rm = T)
+ }
+ }
+summary(nys_acs)
+```
+
+# To divide counties according to poverty 
+```{r}
+nys_acs$poverty_type <- NA
+summary(nys_acs$county_per_poverty)
+
+ nys_acs$poverty_type [nys_acs$county_per_poverty >= 0.14929 & nys_acs$county_per_poverty <0.29935] <- 3
+
+ nys_acs$poverty_type [nys_acs$county_per_poverty >= 0.10903 & nys_acs$county_per_poverty <0.14929] <- 2
+ 
+ nys_acs$poverty_type [nys_acs$county_per_poverty >= 0.04689 & nys_acs$county_per_poverty < 0.109903] <- 1
+ 
+nys_acs$poverty_type_f <- factor(nys_acs$poverty_type, , labels = c("low", "medium", "high")) 
+
+class(nys_acs$poverty_type_f)
+print(nys_acs$poverty_type_f)
+
+```
+```{r}
+nys_schools$stand_english <- scale(nys_schools$mean_ela_score)
+nys_schools$stand_math <- scale(nys_schools$mean_math_score)
+head(nys_schools)
+new_table <- merge(nys_acs, nys_schools, by = c("county_name"))
+head(new_table)
+
+```
+# For each county: total enrollment, percent of students qualifying for free or reduced price lunch, and percent of population in poverty.
+```{r}
+library(dplyr)
+ 
+
+
+new_table %>%
+  select(county_name, total_enroll, per_free_lunch , county_per_poverty) %>%
+  group_by(county_name) %>%
+  summarize(
+    total_enroll = sum(total_enroll) ,
+    per_free_lunch = (sum(per_free_lunch * total_enroll) / sum(total_enroll)) , county_per_poverty= sum(county_per_poverty*total_enroll)/ sum(total_enroll) )
+
+```
+
+
